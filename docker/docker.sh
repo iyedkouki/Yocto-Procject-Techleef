@@ -20,32 +20,6 @@ else
 fi
 }
 
-do_check_file()
-{
-    echo "Check file"
- if [[ ! -f "$shell_file" ]]; then {
- echo "the file not existe"
- exit 1
- }
- else 
-  {
-  if [[ -s "$shell_file" ]]; then
-  echo "the file is empty" 
-  exit 1
-  elif [[ -x "$shell_file" ]];then
-   echo "check the right of exxecution"
-   exit 1
-  elif [[ -r "$shell_file" ]]; then
-   echo "check the right of read"
-   exit 1
-  else
-   echo "the file is existe and not empty with the right of excecution and reading"
-  fi   
-  }
- fi
-}
-
-
 do_checkout(){
     local yml="$shell_file"
     kas-container checkout "${yml}" || {
@@ -59,6 +33,13 @@ do_shell_file(){
     local yml="$shell_file"
     kas-container shell "${yml}" || {
         echo "[X]Failed to shell the file"
+        exit 1
+    }
+}
+do_build_file(){
+    local yml="$shell_file"
+    kas-container build "${yml}" || {
+        echo "[X]Failed to build the file"
         exit 1
     }
 }
@@ -83,7 +64,7 @@ do_prepare_envirement(){
         exit 1
     }
     echo "The envirement is succefully sourced"
-    if ! pip3 list | grep kas; then
+    if ! pip3 list | grep -q kas; then
         echo "[+] Installing Kas"
         if ! pip3 install kas; then 
             echo "[X] failed to install kas"
@@ -94,16 +75,23 @@ do_prepare_envirement(){
 }
 
 main(){
-do_check_argument "$@"
+    local action="$1"
+    do_check_argument "$2" "$3"
+    do_prepare_envirement
 
-do_prepare_envirement
-
-do_check_file
-
-do_checkout
-
-do_shell_file
-
+    if [[ "${action}" == "checkout" ]]; then
+    echo "The Action chechout is lancing"
+    do_checkout
+    elif [[ "${action}" == "shell"  ]]; then
+        echo "The Action Shell is lancing"
+        do_shell_file 
+    elif [[ "${action}" == "build" ]]; then
+        echo "The Action build is lancing"
+        do_build_file
+    else
+        echo "please choise one of this Action checkou/shell/build"
+        exit 1
+    fi
 
 }
 main "$@"

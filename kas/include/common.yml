@@ -7,6 +7,3 @@ header:
     - kas/include/techleef.yml
 
 distro: techleef
-shared: |
- DL_DIR = "/home/iyed/yocto/build/downloads"
- SSTATE_DIR = "/home/iyed/yocto/build/sstate-cache"
