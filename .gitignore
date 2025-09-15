@@ -1,6 +1,6 @@
-yocto-venv/
+yocto-venv/*
 layers/meta-raspberrypi
 layers/openembedded-core
 layers/bitbake
-build/
+build/*
 *.kas*

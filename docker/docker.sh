@@ -3,12 +3,12 @@
 do_check_argument()
 {
 echo "number of argument is  $#"
-if [[ $# -ne 2 ]]; then
+if [[ "$#" -ne 2 ]]; then
     echo "you must provide 2 arguments"
     read -p "Enter the first argument: (virtual env name)  " VEN_DIR
     read -p "enter the second arqument: (shell)  " shell_file
 else 
-    if [[ ! -f $1 ]]; then
+    if [[ ! -f "$1" ]]; then
          VEN_DIR="$1"
         shell_file="$2"
     else
@@ -20,21 +20,22 @@ else
 fi
 }
 
-do_chek_file()
+do_check_file()
 {
+    echo "Check file"
  if [[ ! -f "$shell_file" ]]; then {
  echo "the file not existe"
  exit 1
  }
  else 
   {
-  if [[ -s "$$shell_file" ]]; then
+  if [[ -s "$shell_file" ]]; then
   echo "the file is empty" 
   exit 1
-  elif [[ -x "$$shell_file" ]];then
+  elif [[ -x "$shell_file" ]];then
    echo "check the right of exxecution"
    exit 1
-  elif [[ -r "$$shell_file" ]]; then
+  elif [[ -r "$shell_file" ]]; then
    echo "check the right of read"
    exit 1
   else
@@ -63,12 +64,12 @@ do_shell_file(){
 }
 
 do_prepare_envirement(){
-    if [[ ! -d ${VEN_DIR} ]];then
-        mkdir ${VEN_DIR}
+    if [[ ! -d "${VEN_DIR}" ]];then
+        mkdir "${VEN_DIR}"
         echo "[+] Mkdir the directory"
 
     fi
-    if [[ ! -f ${VEN_DIR}/bin/activate ]]; then
+    if [[ ! -f "${VEN_DIR}/pyvenv.cfg" ]]; then
             echo "[+] created the envirement the directory"
             python3 -m venv "${VEN_DIR}" || { 
             echo "[X] Failed setup the envirement"
@@ -82,20 +83,27 @@ do_prepare_envirement(){
         exit 1
     }
     echo "The envirement is succefully sourced"
-
-    if ! pip3 install kas; then 
-        echo "[X] failed to install kas"
-        exit 1
+    if ! pip3 list | grep kas; then
+        echo "[+] Installing Kas"
+        if ! pip3 install kas; then 
+            echo "[X] failed to install kas"
+            exit 1
+        fi
     fi
+    echo "[+] kas is installed"
 }
 
 main(){
-do_check_argument $1 $2
-do_check_file
+do_check_argument "$@"
+
 do_prepare_envirement
+
+do_check_file
+
 do_checkout
+
 do_shell_file
 
 
 }
-main $1 $2
+main "$@"
