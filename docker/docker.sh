@@ -95,3 +95,6 @@ main(){
 
 }
 main "$@"
+
+# kas-container --repo-rw --runtime-args "-v /home/iyed/yocto/build/downloads:/work/build/downloads" --runtime-args "-v /home/iyed/yocto/build/sstate-cache:/work/build/sstate-cache" shell kas/kas-raspberrypi0-2w-64.yml 
+

@@ -9,6 +9,10 @@ bblayers_conf_header:
 local_conf_header:
   standard: |
     CONF_VERSION = "2"
+    DL_DIR = "/home/iyed/yocto-shared/downloads"
+    SSTATE_DIR = "/home/iyed/yocto-shared/sstate-cache"
+    BB_NUMBER_THREADS ?= "6"
+    PARALLEL_MAKE ?= "-j6"
   diskmon: |
     BB_DISKMON_DIRS = "\
         STOPTASKS,${TMPDIR},1G,100K \
@@ -19,6 +23,3 @@ local_conf_header:
         HALT,${DL_DIR},100M,1K \
         HALT,${SSTATE_DIR},100M,1K \
         HALT,/tmp,10M,1K"
-  shared: |
-    DL_DIR = "/home/iyed/yocto/build/downloads"
-    SSTATE_DIR = "/home/iyed/yocto/build/sstate-cache"
